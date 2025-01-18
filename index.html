@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="initial-scale=1,user-scalable=no,maximum-scale=1,width=device-width" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <title>WebGIS - North Jakarta Bakery Locator</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <style>
+      html, body, #map {
+        height: 100%;
+        margin: 0;
+        font-family: Arial, sans-serif;
+      }
+
+      .popup-content {
+        font-size: 14px;
+        line-height: 1.5;
+      }
+
+      .popup-header {
+        font-weight: bold;
+        font-size: 16px;
+        color: #2c3e50;
+      }
+
+      .popup-image {
+        width: 100%;
+        height: auto;
+        border-radius: 5px;
+        margin-bottom: 10px;
+      }
+
+      .leaflet-popup-content {
+        width: 250px !important;
+      }
+
+      .custom-icon {
+        background-color: white;
+        border-radius: 50%;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+      }
+
+      .nav-link {
+        color: #007bff;
+        text-decoration: none;
+        font-weight: bold;
+      }
+
+      .nav-link:hover {
+        text-decoration: underline;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="map"></div>
+
+    <script>
+      // Initialize the map
+      var map = L.map("map").setView([-6.1522, 106.9066], 13);
+
+      // Add a modern basemap
+      var basemap = L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        maxZoom: 19,
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+      }).addTo(map);
+
+      // Define a custom bakery icon
+      var bakeryIcon = L.icon({
+        iconUrl: "https://cdn-icons-png.flaticon.com/512/2965/2965567.png",
+        iconSize: [40, 40],
+        iconAnchor: [20, 40],
+        popupAnchor: [0, -40]
+      });
+
+      // Marker data for 30 bakeries in North Jakarta
+      var markers = [
+        {
+          coords: [-6.1187, 106.9069],
+          name: "Bakery A",
+          address: "Jl. Pluit Kencana No.1, Jakarta",
+          image: "https://source.unsplash.com/250x150/?bakery",
+          link: "https://goo.gl/maps/example1"
+        },
+        {
+          coords: [-6.1211, 106.9101],
+          name: "Bakery B",
+          address: "Jl. Pluit Indah No.12, Jakarta",
+          image: "https://source.unsplash.com/250x150/?bread",
+          link: "https://goo.gl/maps/example2"
+        },
+        {
+          coords: [-6.1245, 106.9103],
+          name: "Bakery C",
+          address: "Jl. Pluit Timur No.8, Jakarta",
+          image: "https://source.unsplash.com/250x150/?cake",
+          link: "https://goo.gl/maps/example3"
+        },
+        {
+          coords: [-6.1263, 106.9055],
+          name: "Bakery D",
+          address: "Jl. Pantai Indah No.18, Jakarta",
+          image: "https://source.unsplash.com/250x150/?pastry",
+          link: "https://goo.gl/maps/example4"
+        },
+        {
+          coords: [-6.1282, 106.9077],
+          name: "Bakery E",
+          address: "Jl. Muara Karang No.22, Jakarta",
+          image: "https://source.unsplash.com/250x150/?bakery-shop",
+          link: "https://goo.gl/maps/example5"
+        },
+        {
+          coords: [-6.1192, 106.9086],
+          name: "Bakery F",
+          address: "Jl. Pluit Selatan No.10, Jakarta",
+          image: "https://source.unsplash.com/250x150/?baguette",
+          link: "https://goo.gl/maps/example6"
+        },
+        {
+          coords: [-6.1213, 106.9062],
+          name: "Bakery G",
+          address: "Jl. Pluit Barat No.15, Jakarta",
+          image: "https://source.unsplash.com/250x150/?baking",
+          link: "https://goo.gl/maps/example7"
+        },
+        {
+          coords: [-6.1277, 106.9041],
+          name: "Bakery H",
+          address: "Jl. Pantai Mutiara No.3, Jakarta",
+          image: "https://source.unsplash.com/250x150/?artisan-bread",
+          link: "https://goo.gl/maps/example8"
+        },
+        {
+          coords: [-6.1154, 106.9122],
+          name: "Bakery I",
+          address: "Jl. Muara Baru No.9, Jakarta",
+          image: "https://source.unsplash.com/250x150/?cakeshop",
+          link: "https://goo.gl/maps/example9"
+        },
+        {
+          coords: [-6.1127, 106.9105],
+          name: "Bakery J",
+          address: "Jl. Penjaringan No.7, Jakarta",
+          image: "https://source.unsplash.com/250x150/?desserts",
+          link: "https://goo.gl/maps/example10"
+        },
+        // Add more bakery locations as needed up to 30
+      ];
+
+      // Add markers with tooltips
+      markers.forEach(function(marker) {
+        var tooltip = L.marker(marker.coords, { icon: bakeryIcon })
+          .bindTooltip(marker.name, {
+            permanent: true,
+            direction: "top",
+            className: "custom-tooltip"
+          })
+          .addTo(map);
+
+        tooltip.bindPopup(`
+          <div class="popup-content">
+            <div class="popup-header">${marker.name}</div>
+            <img class="popup-image" src="${marker.image}" alt="${marker.name}" />
+            <p>${marker.address}</p>
+            <a class="nav-link" href="${marker.link}" target="_blank">Navigate to Location</a>
+          </div>
+        `);
+      });
+    </script>
+  </body>
+</html>
